@@ -61,6 +61,11 @@ def record_feed_run(
     updated: int,
     total: int,
 ) -> FeedRun:
+    if not watermark:
+        previous = latest_feed_run(session)
+        if previous and previous.watermark:
+            watermark = previous.watermark
+
     run = FeedRun(
         created_at=_utc_now(),
         query_params=query_params,
@@ -79,3 +84,11 @@ def record_feed_run(
 
 def latest_feed_run(session: Session) -> FeedRun | None:
     return session.exec(select(FeedRun).order_by(FeedRun.id.desc())).first()
+
+
+def latest_watermark(session: Session) -> str | None:
+    return session.exec(
+        select(FeedRun.watermark)
+        .where(FeedRun.watermark != "")
+        .order_by(FeedRun.id.desc())
+    ).first()

@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 from auth import create_session
 from api import get_advisory_feed
 from db import get_session
-from storage import record_feed_run, upsert_advisories
+from storage import latest_watermark, record_feed_run, upsert_advisories
 
 load_dotenv()
 
@@ -14,15 +14,18 @@ PUBLIC_API_PREFIX = os.getenv("PUBLIC_API_PREFIX")
 client_id = os.getenv("CLIENT_ID")
 client_secret = os.getenv("CLIENT_SECRET")
 
-with create_session(client_id=client_id, client_secret=client_secret) as http_session:
-    print("querying advisory feed")
-    params = {
-        "modified_since": "2026-07-15T00:00:00.000000+00:00",
-        "limit": 50,
-        #"include_purls": True
-    }
+with get_session() as session:
+    watermark = latest_watermark(session)
 
-    advisories, page_timings, total_elapsed, watermark = get_advisory_feed(http_session, params)
+params = {"limit": 50}
+if watermark:
+    params["modified_since"] = watermark
+
+with create_session(client_id=client_id, client_secret=client_secret) as http_session:
+    print(f"querying advisory feed with params={params}")
+    advisories, page_timings, total_elapsed, watermark = get_advisory_feed(
+        http_session, params
+    )
 
 with get_session() as session:
     result = upsert_advisories(session, advisories)
