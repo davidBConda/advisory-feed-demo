@@ -1,5 +1,7 @@
 # Advisory Feed Demo
 
+A demo project that shows how to utilize the [advisory feed api](https://anaconda.com/api/docs/#tag/Advisories).
+
 ## Setup
 1) Install [conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html)
 2) Run `conda env create -f environment.yml`
