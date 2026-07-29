@@ -1,0 +1,9 @@
+name: advisory-feed-demo
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python
+  - sqlite
+  - python-dotenv
+  - requests
