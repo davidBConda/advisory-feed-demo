@@ -7,4 +7,11 @@
 4) Run `cp example.env .env`
 5) Create [service account token](https://www.anaconda.com/docs/anaconda-platform/admin/service-accounts)
 6) Copy service account CLIENT_ID and CLIENT_SECRET to `.env` file
+7) Run `alembic upgrade head` to create the database schema
 
+## Notes
+
+### Database migrations
+- Apply: `alembic upgrade head`
+- Autogenerate after model changes: `alembic revision --autogenerate -m "description"`
+- Optional: set `DATABASE_URL` (defaults to `sqlite:///.../advisories.db`)

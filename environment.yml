@@ -7,3 +7,5 @@ dependencies:
   - sqlite
   - python-dotenv
   - requests
+  - sqlmodel
+  - alembic
