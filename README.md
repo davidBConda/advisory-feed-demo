@@ -20,6 +20,12 @@ A demo project that shows how to utilize the [advisory feed api](https://anacond
 Each run uses the latest watermark from previous runs as `modified_since`.
 To re-query the full feed from the start, run `python main.py --refresh`.
 
+Pass extra query params as JSON (merged over defaults `limit=50`, `include_purls=true`):
+
+```bash
+python main.py --params '{"limit": 25, "include_purls": false}'
+```
+
 ### Query Results
 1) Run `sqlite3 advisories.db`
 2) Run any sql query e.g. `select advisory_id from advisories;`
