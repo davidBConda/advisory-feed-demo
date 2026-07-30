@@ -1,4 +1,5 @@
 import argparse
+import json
 import os
 
 from dotenv import load_dotenv
@@ -23,10 +24,17 @@ parser.add_argument(
     action="store_true",
     help="Ignore the stored watermark and query the feed from the start",
 )
+parser.add_argument(
+    "--params",
+    type=json.loads,
+    default={},
+    metavar="JSON",
+    help='Extra query params as JSON, e.g. \'{"limit": 20, "include_purls": false}\'',
+)
 args = parser.parse_args()
 
-params = {"limit": 50, "include_purls": True}
-if not args.refresh:
+params = {**args.params}
+if not args.refresh and "modified_since" not in params:
     with get_session() as session:
         watermark = latest_watermark(session)
     if watermark:
