@@ -1,7 +1,10 @@
+import argparse
 import os
+
 from dotenv import load_dotenv
-from auth import create_session
+
 from api import get_advisory_feed
+from auth import create_session
 from db import get_session
 from storage import latest_watermark, record_feed_run, upsert_advisories
 
@@ -14,12 +17,20 @@ PUBLIC_API_PREFIX = os.getenv("PUBLIC_API_PREFIX")
 client_id = os.getenv("CLIENT_ID")
 client_secret = os.getenv("CLIENT_SECRET")
 
-with get_session() as session:
-    watermark = latest_watermark(session)
+parser = argparse.ArgumentParser(description="Fetch and store the advisory feed")
+parser.add_argument(
+    "--refresh",
+    action="store_true",
+    help="Ignore the stored watermark and query the feed from the start",
+)
+args = parser.parse_args()
 
-params = {"limit": 50}
-if watermark:
-    params["modified_since"] = watermark
+params = {"limit": 50, "include_purls": True}
+if not args.refresh:
+    with get_session() as session:
+        watermark = latest_watermark(session)
+    if watermark:
+        params["modified_since"] = watermark
 
 with create_session(client_id=client_id, client_secret=client_secret) as http_session:
     print(f"querying advisory feed with params={params}")

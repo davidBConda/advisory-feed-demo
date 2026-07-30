@@ -17,7 +17,8 @@ A demo project that shows how to utilize the [advisory feed api](https://anacond
 1) Ensure that environment is activated `conda activate advisory-feed-demo`
 2) Run `python main.py`
 
-Each run will use the latest watermark out of previous runs
+Each run uses the latest watermark from previous runs as `modified_since`.
+To re-query the full feed from the start, run `python main.py --refresh`.
 
 ### Query Results
 1) Run `sqlite3 advisories.db`
